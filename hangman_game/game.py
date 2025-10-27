@@ -3,17 +3,18 @@
 def init_state(secret: str, max_tries: int) -> dict:
     state={
             'secret':secret,
-           'display':list[str],
-           'guessed':set[str],
+           'display':["_"]*len(secret),
+           'guessed':[],
            'guesses_wrong':0,
            'max_tries':max_tries
            }
     return state
 
 
-def validate_guess(ch: str, guessed: set[str]) -> tuple[bool, str]:
+def validate_guess(ch: str, guessed) -> tuple[bool, str]:
     ch=ch.strip()
     if len(ch)==1 and ch not in guessed and 'א' <= ch <='ת' :
+        guessed.append(ch)
         ret= (True,'The input is correct')
         return ret
     ret=(False,"The input is incorrect")
@@ -22,7 +23,10 @@ def validate_guess(ch: str, guessed: set[str]) -> tuple[bool, str]:
 
 def apply_guess(state: dict, ch: str) -> bool:
     if ch in state['secret']:
-        state['guessed'].append(ch)
+
+        for i in range(len(state['secret'])):
+            if state['secret'][i] == ch :
+                state['display'][i]=ch
         return True
     else:
         state['guesses_wrong']+=1
@@ -42,4 +46,5 @@ def is_lost(state: dict) -> bool:
     return False
 
 def render_display(state: dict) -> str:
-    pass
+    rander="".join(state['display'])
+    return rander
